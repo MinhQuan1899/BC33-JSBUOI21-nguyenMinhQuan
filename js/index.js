@@ -60,8 +60,8 @@ console.log(staff);
             <td>${obNhanvien.calcGPA()}</td>
             <td>${obNhanvien.classify}</td>
             <td>
-              <button class="btn btn-danger" onclick="delStudent('${obNhanvien.account}')">Del</button>
-              <button class="btn btn-primary" onclick="editStudent('${obNhanvien.account}')">Update</button>
+              <button class="btn btn-danger" onclick="delStaff('${obNhanvien.account}')">Del</button>
+              <button class="btn btn-primary" onclick="editStaff('${obNhanvien.account}')">Update</button>
             </td>
           </tr>
         `;
@@ -71,3 +71,86 @@ console.log(staff);
     document.querySelector('tbody').innerHTML = output;
     return output;
   }
+
+  //studentList = [{1},{2},{3}]
+function editStaff(accountClick) {
+  var nvEdit = null;
+  for (var index = 0; index < staffList.length; index++) {
+    if (staffList[index].account == accountClick) {
+      //Tại vị trí này tìm thấy idClick = id object trong mảng
+      nvEdit = staffList[index];
+      break;
+    }
+  }
+  if (nvEdit !== null) {
+    //Đưa dữ liệu lên các control input
+    document.querySelector('#tknv').value = nvEdit.id;
+    document.querySelector('#name').value = nvEdit.name;
+    document.querySelector('#email').value = nvEdit.email;
+    document.querySelector('#password').value = nvEdit.password;
+    document.querySelector('#datepicker').value = nvEdit.wdate;
+    document.querySelector('#luongCB').value = nvEdit.salary;
+    document.querySelector('#chucvu').value = nvEdit.position;
+    document.querySelector('#gioLam').value = nvEdit.wtime;
+  }
+}
+
+
+
+  function delStaff(accountClick) { // input id: giá trị người dùng click
+    //output: index    //                 0   1   2
+    var indexDel = -1; // 
+    for (var index = staffList.length - 1; index >= 0; index--) {
+      //Mỗi lần duyệt lấy ra 1 phần tử của mảng so với input người dùng click
+      if (staffList[index].account == accountClick) {
+        // indexDel = index; //Lưu lại vị trí id click = nhan vien có mã trùng với accountClick
+        // break; //thoát ra khỏi vòng lặp
+        staffList.splice(index, 1);
+      }
+    }
+    renderStaffList(staffList);
+  
+    // saveLocalStorage(studentList, 'arrSV');
+    // if (indexDel !== -1) { //tìm thấy
+    //   studentList.splice(indexDel, 1);
+    //   //Gọi lại hàm render table mới
+    //   //Lưu danh sách sau khi xoá vào storage
+    // }
+  }
+
+//Khi người dùng thay đổi sau đó bấm nút update 
+function updateStaff() {
+  var nvUpdate = new Staff();
+  nvUpdate.account = document.querySelector('#tknv').value;
+  nvUpdate.name = document.querySelector('#name').value;
+  nvUpdate.email = document.querySelector('#email').value;
+  nvUpdate.password = document.querySelector('#password').value;
+  nvUpdate.wdate = document.querySelector('#datepicker').value;
+  nvUpdate.salary = document.querySelector('#luongCB').value;
+  nvUpdate.position = document.querySelector('#chucvu').value;
+  nvUpdate.wtime = document.querySelector('#gioLam').value;
+  console.log(nvUpdate);
+  //Duyệt qua từng object trong studentList tìm ra vị trí của object cần thay đổi
+  //                 0      1      2
+  //studentList = [{id:1},{id:2},{id:3}]
+  let indexEdit = -1;
+  for (var index = 0; index < staffList.length; index++) {
+    if (staffList[index].account === nvUpdate.account) {
+      indexEdit = index; //1
+      break;
+    }
+  }
+  if (indexEdit !== -1) {
+    //Nếu tìm thấy vị trí trong mảng thì lấy object trong mảng gán lại = object trên giao diện người dùng thay đổi
+    // studentList[indexEdit] = svUpdate;
+    staffList[indexEdit].name = nvUpdate.name;
+    staffList[indexEdit].email = nvUpdate.email;
+    staffList[indexEdit].password = nvUpdate.password;
+    staffList[indexEdit].wdate = nvUpdate.wdate;
+    staffList[indexEdit].salary = nvUpdate.salary;
+    staffList[indexEdit].position = nvUpdate.position;
+    staffList[indexEdit].wtime = nvUpdate.wtime;
+    //Gọi hàm rendertable truyền cho hàm mảng mới
+    renderStaffList(staffList);
+  }
+}
